@@ -1,7 +1,10 @@
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { pushAExercises } from "../data/workouts";
+import ExerciseCard from '../components/exercise-card';
 
 export default function WorkoutScreen() {
+  
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
@@ -10,6 +13,14 @@ export default function WorkoutScreen() {
         <Text style={styles.title}>Push A</Text>
 
         <Text style={styles.description}>Chest • Shoulders • Triceps</Text>
+        <View style={styles.exerciseList}>
+          {pushAExercises.map((exercise) => (
+  <ExerciseCard
+    key={exercise.id}
+    exercise={exercise}
+  />
+))}
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -46,4 +57,10 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginTop: 5,
   },
+
+  exerciseList: {
+    marginTop: 32,
+    gap: 12,
+  },
+  
 });
