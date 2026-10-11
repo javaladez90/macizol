@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import {  StyleSheet, Text, TextInput, View } from 'react-native';
+import {  StyleSheet, Text, View } from 'react-native';
 
 import type { Exercise } from '../types/exercise';
 import type { WorkoutSet } from '../types/workout-set';
@@ -9,13 +9,29 @@ type ExerciseCardProps = {
 };
 
 export default function ExerciseCard({ exercise }: ExerciseCardProps) {
-    const [currentSet, setCurrentSet] = useState<WorkoutSet>({
+    const [sets, setSets] = useState<WorkoutSet[]>([
+      {
         id: 'set-1',
         setNumber: 1,
         weight: 0,
         reps: 0,
         rir: 0,
-    });
+    },
+  ]);
+
+    const updateSet = (
+      setId: string,
+      field: 'weight' | 'reps' | 'rir',
+      value: number 
+    ) => {
+      setSets((currentSets) =>
+        currentSets.map((set) =>
+          set.id === setId
+            ? { ...set, [field]: value }
+            : set
+          )
+        );
+    };
 
     return (
   <View style={styles.exerciseCard}>
@@ -32,46 +48,27 @@ export default function ExerciseCard({ exercise }: ExerciseCardProps) {
       <Text style={styles.setHeaderText}>RIR</Text>
     </View>
 
-    <View style={styles.setRow}>
-      <Text style={styles.setValue}>{currentSet.setNumber}</Text>
+    {sets.map((set) => (
+      <View key={set.id} style={styles.setRow}>
+        <Text style={styles.setValue}>
+          {set.setNumber}
+        </Text>
 
-      <TextInput
-        style={styles.setInput}
-        value={currentSet.weight.toString()}
-        onChangeText={(text) =>
-          setCurrentSet({
-            ...currentSet,
-            weight: Number(text),
-          })
-        }
-        keyboardType="numeric"
-      />
+        <Text style={styles.setValue}>
+          {set.weight}
+        </Text>
 
-      <TextInput
-        style={styles.setInput}
-        value={currentSet.reps.toString()}
-        onChangeText={(text) =>
-          setCurrentSet({
-            ...currentSet,
-            reps: Number(text),
-          })
-        }
-        keyboardType="numeric"
-      />
+        <Text style={styles.setValue}>
+          {set.reps}
+        </Text>
 
-      <TextInput
-        style={styles.setInput}
-        value={currentSet.rir.toString()}
-        onChangeText={(text) =>
-          setCurrentSet({
-            ...currentSet,
-            rir: Number(text),
-          })
-        }
-        keyboardType="numeric"
-      />
+        <Text style={styles.setValue}>
+          {set.rir}
+        </Text>
+      </View>
+    ))}
     </View>
-  </View>
+  
 );
 }
 
