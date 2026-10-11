@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import {  StyleSheet, Text, View } from 'react-native';
+import {  Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import WeightInput from './weight-input';
 
 import type { Exercise } from '../types/exercise';
 import type { WorkoutSet } from '../types/workout-set';
@@ -33,6 +34,34 @@ export default function ExerciseCard({ exercise }: ExerciseCardProps) {
         );
     };
 
+    const addSet = () => {
+      setSets((currentSets) => {
+        const nextSetNumber = currentSets.length + 1;
+
+        const newSet: WorkoutSet = {
+          id: `set-${Date.now()}-${Math.random()}`,
+          setNumber: nextSetNumber,
+          weight: 0,
+          reps: 0,
+          rir: 0,
+        };
+
+        return [...currentSets, newSet];
+      });
+    };
+
+    const removeSet = (setId: string) => {
+      setSets((currentSets) =>
+        currentSets
+          .filter((set) => set.id !== setId)
+          .map((set, index) => ({
+            ...set,
+            setNumber: index + 1,
+          }))
+        );
+    };
+
+
     return (
   <View style={styles.exerciseCard}>
     <Text style={styles.exerciseName}>{exercise.name}</Text>
@@ -50,25 +79,52 @@ export default function ExerciseCard({ exercise }: ExerciseCardProps) {
 
     {sets.map((set) => (
       <View key={set.id} style={styles.setRow}>
-        <Text style={styles.setValue}>
-          {set.setNumber}
-        </Text>
+        <View style={styles.setNumberContainer}>
+          <Text style={styles.setNumber}>
+            {set.setNumber}
+          </Text>
 
-        <Text style={styles.setValue}>
-          {set.weight}
-        </Text>
+          {sets.length > 1 && (
+            <Pressable onPress={() => removeSet(set.id)}>
+              <Text style={styles.removeSetText}>×</Text>
+            </Pressable>
+            )}
+        </View>
 
-        <Text style={styles.setValue}>
-          {set.reps}
-        </Text>
+        <WeightInput
+          value={set.weight}
+          onChange={(value) =>
+            updateSet(set.id, 'weight', value)
+          }
+        />
 
-        <Text style={styles.setValue}>
-          {set.rir}
-        </Text>
+        <TextInput
+          style={styles.setInput}
+          value={set.reps.toString()}
+          onChangeText={(text) =>
+            updateSet(set.id, 'reps', Number(text))
+          }
+          keyboardType="number-pad"
+          selectTextOnFocus
+        />
+
+        <TextInput
+          style={styles.setInput}
+          value={set.rir.toString()}
+          onChangeText={(text) =>
+            updateSet(set.id, 'rir', Number(text))
+          }
+          keyboardType="number-pad"
+          selectTextOnFocus
+        />
       </View>
     ))}
+    
+    <Pressable style={styles.addSetButton} onPress={addSet}>
+      <Text style={styles.addSetText}>+ ADD SET</Text>
+    </Pressable>
     </View>
-  
+
 );
 }
 
@@ -123,5 +179,35 @@ const styles = StyleSheet.create({
     width: '25%',
     textAlign: 'center',
     padding: 0,
+  },
+  addSetButton: {
+    marginTop: 18,
+    paddingVertical: 12,
+    borderRadius: 8,
+    backgroundColor: '#303030',
+    alignItems: 'center',
+  },
+  addSetText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '800',
+    letterSpacing: 1,
+  },
+  setNumberContainer: {
+    width: '25%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  setNumber: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  removeSetText: {
+    color: '#FF6B6B',
+    fontSize: 20,
+    fontWeight: '700',
   },
 });

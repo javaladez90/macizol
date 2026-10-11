@@ -1,13 +1,25 @@
-import { StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { pushAExercises } from "../data/workouts";
 import ExerciseCard from '../components/exercise-card';
+import { useLocalSearchParams } from 'expo-router';
+
 
 export default function WorkoutScreen() {
+
+  const { sessionId } = useLocalSearchParams<{
+    sessionId: string;
+  }>();
+
+  console.log('Active workout session:', sessionId);
   
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
+      <ScrollView 
+        style={styles.content}
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+      >
         <Text style={styles.label}>CURRENT WORKOUT</Text>
 
         <Text style={styles.title}>Push A</Text>
@@ -21,7 +33,7 @@ export default function WorkoutScreen() {
   />
 ))}
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -61,6 +73,9 @@ const styles = StyleSheet.create({
   exerciseList: {
     marginTop: 32,
     gap: 12,
+  },
+  scrollContent: {
+    paddingBottom: 40,
   },
   
 });

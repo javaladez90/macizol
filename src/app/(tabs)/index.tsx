@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router'
+import { createWorkoutSession } from '../../database/workout-sessions';
 
 export default function HomeScreen() {
     const router = useRouter();
@@ -8,7 +9,14 @@ export default function HomeScreen() {
     const todaysWorkout = 'Push A';
 
     const handleStartWorkout = () => {
-        router.push('/workout');
+        const sessionId = createWorkoutSession(todaysWorkout);
+
+        console.log('Workout session created:', sessionId);
+
+        router.push({
+            pathname: '/workout',
+            params: { sessionId: String(sessionId) },
+        });
     };
 
     return (
