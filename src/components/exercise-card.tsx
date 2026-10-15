@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {  Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import WeightInput from './weight-input';
 
@@ -7,59 +6,51 @@ import type { WorkoutSet } from '../types/workout-set';
 
 type ExerciseCardProps = {
     exercise: Exercise;
+    sets: WorkoutSet[];
+    onSetsChange: (sets: WorkoutSet[]) => void;
 };
 
-export default function ExerciseCard({ exercise }: ExerciseCardProps) {
-    const [sets, setSets] = useState<WorkoutSet[]>([
-      {
-        id: 'set-1',
-        setNumber: 1,
-        weight: 0,
-        reps: 0,
-        rir: 0,
-    },
-  ]);
+export default function ExerciseCard({
+  exercise,
+  sets,
+  onSetsChange,
+}: ExerciseCardProps) {
 
     const updateSet = (
       setId: string,
       field: 'weight' | 'reps' | 'rir',
       value: number 
     ) => {
-      setSets((currentSets) =>
-        currentSets.map((set) =>
-          set.id === setId
-            ? { ...set, [field]: value }
-            : set
-          )
-        );
+      const updatedSets = sets.map((set) =>
+      set.id === setId ? { ...set, [field]: value } : set
+    );
+
+    onSetsChange(updatedSets);
     };
 
     const addSet = () => {
-      setSets((currentSets) => {
-        const nextSetNumber = currentSets.length + 1;
+      const nexteSetNumber = sets.length + 1;
 
-        const newSet: WorkoutSet = {
-          id: `set-${Date.now()}-${Math.random()}`,
-          setNumber: nextSetNumber,
-          weight: 0,
-          reps: 0,
-          rir: 0,
-        };
-
-        return [...currentSets, newSet];
-      });
+      const newSet: WorkoutSet = {
+        id: `set-${Date.now()}-${Math.random()}`,
+        setNumber: nexteSetNumber,
+        weight: 0,
+        reps: 0,
+        rir: 0,
+      };
+      onSetsChange([...sets, newSet]);
     };
 
     const removeSet = (setId: string) => {
-      setSets((currentSets) =>
-        currentSets
-          .filter((set) => set.id !== setId)
-          .map((set, index) => ({
-            ...set,
-            setNumber: index + 1,
-          }))
-        );
-    };
+      const updatedSets = sets
+        .filter((set) => set.id !== setId)
+        .map((set, index) => ({
+          ...set,
+          setNumber: index + 1,
+        }));
+      
+      onSetsChange(updatedSets);
+      };
 
 
     return (
