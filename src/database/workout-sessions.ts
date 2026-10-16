@@ -110,3 +110,32 @@ export const getCompletedWorkouts = (): CompletedWorkout[] => {
         ORDER BY completed_at DESC`
     );
 };
+
+export type SavedWorkoutSet = {
+    id: number;
+    exercise_id: string;
+    exercise_name: string;
+    set_number: number;
+    weight: number;
+    reps: number;
+    rir: number;
+};
+
+export const getSavedWorkoutSets = (
+    sessionId: number
+): SavedWorkoutSet[] => {
+    return db.getAllSync<SavedWorkoutSet>(
+        `SELECT
+            id,
+            exercise_id,
+            exercise_name,
+            set_number,
+            weight,
+            reps,
+            rir
+        FROM workout_sets
+        WHERE session_id = ?
+        ORDER BY id ASC`,
+        [sessionId]
+    );
+};

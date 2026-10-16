@@ -23,6 +23,7 @@ export default function RootLayout() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="workout" />
+        <Stack.Screen name="workout-details" options={{ title: 'Workout Details', headerShown: true }} />
       </Stack>
     </ThemeProvider>
   );

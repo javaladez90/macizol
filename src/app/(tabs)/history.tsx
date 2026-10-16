@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import {
     FlatList,
+    Pressable,
     StyleSheet,
     Text,
     View,
@@ -11,8 +12,10 @@ import {
     getCompletedWorkouts,
     type CompletedWorkout,
 } from '../../database/workout-sessions';
+import { useRouter } from 'expo-router'
 
 export default function HistoryScreen() {
+    const router = useRouter();
     const [workouts, setWorkouts] = useState<CompletedWorkout[]>([]);
 
     useFocusEffect(
@@ -36,15 +39,25 @@ export default function HistoryScreen() {
                     </Text>
                 }
                 renderItem={({ item }) => (
-                    <View style={styles.workoutCard}>
-                        <Text style={styles.workoutName}>
-                            {item.workout_name}
-                        </Text>
+                    <Pressable
+                        style={styles.workoutCard}
+                        onPress={() =>
+                            router.push({
+                                pathname: '/workout-details',
+                                params: {
+                                    sessionId: String(item.id),
+                                },
+                            })
+                        }
+                        >
+                            <Text style={styles.workoutName}>
+                                {item.workout_name}
+                            </Text>
 
-                        <Text style={styles.workoutDate}>
-                            {new Date(item.completed_at).toLocaleDateString()}
-                        </Text>
-                    </View>
+                            <Text style={styles.workoutDate}>
+                                {new Date(item.completed_at).toLocaleDateString()}
+                            </Text>
+                        </Pressable>
                 )}
                 />
         </View>
