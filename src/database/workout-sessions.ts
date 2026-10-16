@@ -33,6 +33,12 @@ export const finishWorkoutSession = (
 
         for (const exercise of exercises) {
             for (const set of exercise.sets) {
+
+                // skip sets that havent been performed
+                if (set.reps <= 0) {
+                    continue;
+                }
+
                 db.runSync(
                     `INSERT INTO workout_sets (
                     session_id,
@@ -84,3 +90,23 @@ export const getWorkoutSets = (sessionId: number) => {
         [sessionId]
     );
     };
+
+export type CompletedWorkout = {
+    id: number;
+    workout_name: string;
+    started_at: string;
+    completed_at: string;
+};
+
+export const getCompletedWorkouts = (): CompletedWorkout[] => {
+    return db.getAllSync<CompletedWorkout>(
+        `SELECT
+         id,
+         workout_name,
+         started_at
+         completed_at
+        FROM workout_sessions
+        WHERE completed_at IS NOT NULL
+        ORDER BY completed_at DESC`
+    );
+};
