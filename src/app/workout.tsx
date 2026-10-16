@@ -3,12 +3,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { pushAExercises } from "../data/workouts";
 import ExerciseCard from '../components/exercise-card';
 import { useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Exercise } from '../types/exercise';
 import { useRouter } from 'expo-router';
-import { 
+import {
   finishWorkoutSession,
   getWorkoutSets,
+  getPreviousExerciseSets,
+  type SavedWorkoutSet,
 } from '../database/workout-sessions';
 
 
@@ -34,6 +36,20 @@ export default function WorkoutScreen() {
       ],
   }))
 );
+  const [previousSets, setPreviousSets] = useState<
+    Record<string, SavedWorkoutSet[]>
+    >({});
+    
+
+  useEffect(() => {
+    const history: Record<string, SavedWorkoutSet[]> = {};
+
+    for (const exercise of exercises) {
+      history[exercise.id] = getPreviousExerciseSets(exercise.id);
+    }
+
+    setPreviousSets(history);
+  }, []);
 
   const router = useRouter();
   const [isFinishing, setIsFinishing] = useState(false);
@@ -95,6 +111,7 @@ export default function WorkoutScreen() {
     key={exercise.id}
     exercise={exercise}
     sets={exercise.sets}
+    previousSets={previousSets[exercise.id] ?? []}
     onSetsChange={(updatedSets) => {
       setExercises((currentExercises) =>
         currentExercises.map((currentExercise) =>

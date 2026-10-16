@@ -139,3 +139,60 @@ export const getSavedWorkoutSets = (
         [sessionId]
     );
 };
+
+export const getPreviousExerciseSet = (
+    exerciseId: string
+): SavedWorkoutSet | null => {
+    return db.getFirstSync<SavedWorkoutSet>(
+        `SELECT
+          ws.id,
+          ws.exercise_id,
+          ws.exercise_name,
+          ws.set_number,
+          ws.weight,
+          ws.reps,
+          ws.rir
+        FROM workout_sets AS ws
+        INNER JOIN workout_sessions AS session
+            ON ws.session_id = session.id
+        WHERE ws.exercise_id = ?
+            AND session.completed_at IS NOT NULL
+        ORDER BY session.completed_at DESC,
+            ws.set_number DESC,
+        LIMIT 1`,
+        [exerciseId]
+    );
+};
+
+export const  getPreviousExerciseSets = (
+    exerciseId: string
+): SavedWorkoutSet[] => {
+    return db.getAllSync<SavedWorkoutSet>(
+        `SELECT
+          ws.id,
+          ws.exercise_id,
+          ws.exercise_name,
+          ws.set_number,
+          ws.weight,
+          ws.reps,
+          ws.rir
+        FROM workout_sets AS ws
+        INNER JOIN workout_sessions AS session
+            ON ws.session_id = session.id
+        WHERE ws.exercise_id = ?
+            AND session.completed_at IS NOT NULL
+            AND ws.session_id = (
+                SELECT previous.id
+                From workout_sessions AS previous
+                INNER JOIN workout_sets AS previous_set
+                    ON previous_set.session_id = previous.id
+                WHERE previous_set.exercise_id = ?
+                    AND previous.completed_at IS NOT NULL
+                ORDER BY previous.completed_at DESC,
+                    previous.id DESC
+                LIMIT 1
+    )
+        ORDER BY ws.set_number ASC`,
+        [exerciseId, exerciseId]
+    );
+};

@@ -1,6 +1,6 @@
 import {  Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import WeightInput from './weight-input';
-
+import type { SavedWorkoutSet } from '../database/workout-sessions';
 import type { Exercise } from '../types/exercise';
 import type { WorkoutSet } from '../types/workout-set';
 
@@ -8,12 +8,14 @@ type ExerciseCardProps = {
     exercise: Exercise;
     sets: WorkoutSet[];
     onSetsChange: (sets: WorkoutSet[]) => void;
+    previousSets?: SavedWorkoutSet[];
 };
 
 export default function ExerciseCard({
   exercise,
   sets,
   onSetsChange,
+  previousSets,
 }: ExerciseCardProps) {
 
     const updateSet = (
@@ -56,6 +58,37 @@ export default function ExerciseCard({
     return (
   <View style={styles.exerciseCard}>
     <Text style={styles.exerciseName}>{exercise.name}</Text>
+    {previousSets && previousSets.length > 0 && (
+      <View style={styles.previousPerformance}>
+        <Text style={styles.previousLabel}>
+          LAST WORKOUT
+        </Text>
+
+        <View style={styles.previousHeader}>
+          <Text style={styles.previousColumn}>SET</Text>
+          <Text style={styles.previousColumn}>LBS</Text>
+          <Text style={styles.previousColumn}>REPS</Text>
+          <Text style={styles.previousColumn}>RIR</Text>
+        </View>
+
+        {previousSets.map((set) => (
+          <View key={set.id} style={styles.previousRow}>
+            <Text style={styles.previousColumn}>
+              {set.set_number}
+            </Text>
+            <Text style={styles.previousColumn}>
+              {set.weight}
+            </Text>
+            <Text style={styles.previousColumn}>
+              {set.reps}
+            </Text>
+            <Text style={styles.previousColumn}>
+              {set.rir}
+            </Text>
+          </View>
+        ))}
+      </View>
+    )}
 
     <Text style={styles.targetMuscle}>
       {exercise.targetMuscle}
@@ -200,5 +233,38 @@ const styles = StyleSheet.create({
     color: '#FF6B6B',
     fontSize: 20,
     fontWeight: '700',
+  },
+  previousPerformance: {
+    marginTop: 8,
+    marginBottom: 12,
+    padding: 12,
+    backgroundColor: '#262626',
+    borderRadius: 8,
+  },
+  previousLabel: {
+    color: '#888888',
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 1.2,
+    marginBottom: 5,
+  },
+
+  previousHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#444444',
+  },
+  previousRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+  },
+  previousColumn: {
+    color: '#CCCCCC',
+    fontSize: 13,
+    textAlign: 'center',
+    flex: 1,
   },
 });
