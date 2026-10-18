@@ -3,6 +3,7 @@ import WeightInput from './weight-input';
 import type { SavedWorkoutSet } from '../database/workout-sessions';
 import type { Exercise } from '../types/exercise';
 import type { WorkoutSet } from '../types/workout-set';
+import ProgressionRecommendation from './progression-recommendation';
 
 type ExerciseCardProps = {
     exercise: Exercise;
@@ -17,6 +18,12 @@ export default function ExerciseCard({
   onSetsChange,
   previousSets,
 }: ExerciseCardProps) {
+
+  const previousPerformance = (previousSets ?? []).map((set) => ({
+    weight: set.weight,
+    reps: set.reps,
+    rir: set.rir,
+  }));
 
     const updateSet = (
       setId: string,
@@ -147,6 +154,13 @@ export default function ExerciseCard({
     <Pressable style={styles.addSetButton} onPress={addSet}>
       <Text style={styles.addSetText}>+ ADD SET</Text>
     </Pressable>
+
+    <ProgressionRecommendation
+      sets={previousPerformance}
+      minReps={8}
+      maxReps={12}
+      targetRir={2}
+    />
     </View>
 
 );

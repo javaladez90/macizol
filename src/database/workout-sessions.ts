@@ -64,8 +64,9 @@ export const finishWorkoutSession = (
     
     db.runSync(
         `UPDATE workout_sessions
-        SET completed_at =?
-        WHERE id = ?`
+        SET completed_at = ?
+        WHERE id = ?`,
+        [new Date().toISOString(), sessionId]
     );
 });
 };
@@ -103,7 +104,7 @@ export const getCompletedWorkouts = (): CompletedWorkout[] => {
         `SELECT
          id,
          workout_name,
-         started_at
+         started_at,
          completed_at
         FROM workout_sessions
         WHERE completed_at IS NOT NULL
@@ -158,7 +159,7 @@ export const getPreviousExerciseSet = (
         WHERE ws.exercise_id = ?
             AND session.completed_at IS NOT NULL
         ORDER BY session.completed_at DESC,
-            ws.set_number DESC,
+            ws.set_number DESC
         LIMIT 1`,
         [exerciseId]
     );
