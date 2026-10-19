@@ -157,9 +157,9 @@ export default function ExerciseCard({
 
     <ProgressionRecommendation
       sets={previousPerformance}
-      minReps={8}
-      maxReps={12}
-      targetRir={2}
+      minReps={exercise.minReps}
+      maxReps={exercise.maxReps}
+      targetRir={exercise.targetRir}
     />
     </View>
 
