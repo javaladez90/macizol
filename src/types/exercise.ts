@@ -5,4 +5,7 @@ export type Exercise = {
     name: string;
     targetMuscle: string;
     sets: WorkoutSet[];
+    minReps: number;
+    maxReps: number;
+    targetRir: number;
 };

@@ -22,14 +22,14 @@ export default function ProgressionRecommendation({
         return null;
     }
 
-    const recommendation = recommendWorkoutProgresssion(
+    const recommendation = recommendWorkoutProgression(
         sets,
         minReps,
         maxReps,
         targetRir
 );
 
-const message = {
+const messages = {
     increase_weight: 'Consider increasing weight next workout.',
     increase_reps: 'Aim to increase repetitions next workout.',
     maintain: 'Maintain your current weight and focus on your targets.',
