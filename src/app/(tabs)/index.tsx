@@ -11,12 +11,18 @@ export default function HomeScreen() {
     const handleStartWorkout = () => {
         const sessionId = createWorkoutSession(todaysWorkout);
 
+  
+
         console.log('Workout session created:', sessionId);
 
         router.push({
             pathname: '/workout',
             params: { sessionId: String(sessionId) },
         });
+    };
+
+      const handleOpenExerciseLibrary = () => {
+        router.push('/exercise-library');
     };
 
     return (
@@ -49,7 +55,21 @@ export default function HomeScreen() {
                         <Text style={styles.startButtonText}>START WORKOUT</Text>
                     </Pressable>
                 </View>
+                    <Pressable
+                     style={styles.libraryButton}
+                     onPress={handleOpenExerciseLibrary}
+                    >
+                        <View>
+                            <Text style={styles.libraryButtonTitle}>
+                                EXERCISE LIBRARY
+                            </Text>
+                            <Text style={styles.libraryButtonSubtitle}>
+                                Browse exercises and techniques
+                            </Text>
+                        </View>
 
+                        <Text style={styles.libraryArrow}>→</Text>
+                    </Pressable>
                 {/* Progress preview */}
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>THIS WEEK</Text>
@@ -185,5 +205,33 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         letterSpacing: 1,
         marginTop: 3,
+    },
+
+    libraryButton: {
+        backgroundColor: '#1B1B1B',
+        borderRadius: 16,
+        padding: 20,
+        marginTop: 16,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+
+    libraryButtonTitle: {
+        color: '#FFFFFF',
+        fontSize: 13,
+        fontWeight: '800',
+        letterSpacing: 1,
+    },
+
+    libraryButtonSubtitle: {
+        color: '#888888',
+        fontSize: 12,
+        marginTop: 6,
+    },
+
+    libraryArrow: {
+        color: '#FFFFFF',
+        fontSize: 24,
     },
 });

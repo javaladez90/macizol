@@ -3,8 +3,11 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useColorScheme } from 'react-native';
 import { useEffect } from 'react';
 import { initializeDatabase } from '../database/db';
+import { seedExerciseLibrary } from '../database/exercise-library';
 
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
+
+
 
 SplashScreen.preventAutoHideAsync();
 
@@ -13,6 +16,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     initializeDatabase();
+    seedExerciseLibrary();
     console.log('MACIZOL database initialized');
   }, []);
   
@@ -24,7 +28,11 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="workout" />
         <Stack.Screen name="workout-details" options={{ title: 'Workout Details', headerShown: true }} />
+        <Stack.Screen name="exercise-library" options={{ title: 'Exercise Library', headerShown: true, }} />
+        <Stack.Screen name="exercise-details" options={{ title: 'Exercise Details', headerShown: true, }} />
       </Stack>
+
+      
     </ThemeProvider>
   );
 }
